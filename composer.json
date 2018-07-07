@@ -1,0 +1,28 @@
+{
+    "name": "learnbyapplication/staticsitegnerator",
+    "description": "PHP Static Site Generator",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thomason, James",
+            "email": "JamesThomason@QuickenLoans.com"
+        }
+    ],
+    "scripts": {
+        "sniff": "phpcs --colors --runtime-set ignore_warnings_on_exit true src",
+        "analyze": "phpstan analyse --configuration=phpstan.neon -l 5 src",
+        "lint": "phplint --no-cache --ansi src"
+    },
+    "require": {},
+    "require-dev": {
+        "overtrue/phplint":             "~1.0",
+        "phpstan/phpstan":              "~0.9",
+        "slevomat/coding-standard":     "~4.0",
+        "squizlabs/php_codesniffer":    "~3.0",
+
+        "codedungeon/phpunit-result-printer": "~0.5",
+        "mockery/mockery":                    "~1.0",
+        "phpunit/phpunit":                    "~6.2"
+    }
+}

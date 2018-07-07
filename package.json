@@ -1,0 +1,18 @@
+{
+  "name": "staticsitegenerator",
+  "version": "1.0.0",
+  "description": "PHP Static Site Generator",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "secure": "snyk test && snyk monitor"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "snyk": "^1.88.2"
+  }
+}

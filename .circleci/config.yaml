@@ -1,0 +1,124 @@
+version: 2
+
+defaults: &defaults
+    working_directory: '~/project'
+
+php_defaults: &php_defaults
+    <<: *defaults
+    docker:
+        - image: 'circleci/php:latest'
+
+node_defaults: &node_defaults
+    <<: *defaults
+    docker:
+        - image: 'circleci/node:latest'
+
+attach_workspace: &attach_workspace
+    attach_workspace:
+        at: '.'
+
+persist_workspace: &persist_workspace
+    persist_to_workspace:
+        root: '.'
+        paths: [ '.' ]
+
+workflows:
+    version: 2
+    pipeline:
+        jobs:
+            - checkout
+            - php_install:
+                requires: [ checkout ]
+            - node_install:
+                requires: [ checkout ]
+            - test:
+                requires: [ php_install ]
+            - analyze:
+                requires: [ php_install ]
+            - lint:
+                requires: [ php_install ]
+            - secure:
+                requires: [ php_install, node_install ]
+
+jobs:
+    checkout:
+        <<: *php_defaults
+        steps:
+            - checkout
+            - *persist_workspace
+
+    php_install:
+        <<: *php_defaults
+        steps:
+            - *attach_workspace
+
+            - restore_cache:
+                key: 'composer-lock-{{ checksum "composer.lock" }}'
+
+            - run:
+                name: 'Install Composer dependencies'
+                command: |
+                    composer --no-interaction --no-progress install
+                    composer show
+
+            - save_cache:
+                key: 'composer-lock-{{ checksum "composer.json" }}'
+                paths: [ 'vendor' ]
+
+            - *persist_workspace
+
+    node_install:
+        <<: *node_defaults
+        steps:
+            - *attach_workspace
+
+            - restore_cache:
+                key: 'package-lock-{{ checksum "package.lock" }}'
+
+            - run:
+                name: 'Install NPM dependencies'
+                command: 'npm ci'
+
+            - save_cache:
+                key: 'package-lock-{{ checksum "package.lock" }}'
+                paths: [ 'node_modules' ]
+
+            - *persist_workspace
+
+    test:
+        <<: *php_defaults
+        steps:
+            - *attach_workspace
+            - run:
+                name: 'Test'
+                command: 'composer run-script test'
+
+    analyze:
+        <<: *php_defaults
+        steps:
+            - *attach_workspace
+            - run:
+                name: 'Analyze'
+                command: 'composer run-script analyze'
+
+    lint:
+        <<: *php_defaults
+        steps:
+            - *attach_workspace
+
+            - run:
+                name: 'Lint'
+                command: 'composer run-script lint'
+
+            - run:
+                name: 'Sniff'
+                command: 'composer run-script sniff'
+
+    secure:
+        <<: *node_defaults
+        steps:
+            - *attach_workspace
+
+            - run:
+                name: 'Secure'
+                command: 'npm run-script secure'
