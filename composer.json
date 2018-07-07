@@ -22,7 +22,7 @@
     "scripts": {
         "test": "phpunit",
         "sniff": "phpcs --colors --runtime-set ignore_warnings_on_exit true src",
-        "analyze": "phpstan analyse --configuration=phpstan.neon -l 5 src",
+        "analyze": "phpstan analyse --configuration=phpstan.neon -l 7 src",
         "lint": "phplint --no-cache --ansi src"
     },
     "require": {},
