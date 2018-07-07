@@ -9,7 +9,18 @@
             "email": "JamesThomason@QuickenLoans.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "LearnByApplication\\StaticSiteGenerator\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LearnByApplication\\StaticSiteGenerator\\": "tests"
+        }
+    },
     "scripts": {
+        "test": "phpunit",
         "sniff": "phpcs --colors --runtime-set ignore_warnings_on_exit true src",
         "analyze": "phpstan analyse --configuration=phpstan.neon -l 5 src",
         "lint": "phplint --no-cache --ansi src"

@@ -17,11 +17,6 @@ attach_workspace: &attach_workspace
     attach_workspace:
         at: '.'
 
-persist_workspace: &persist_workspace
-    persist_to_workspace:
-        root: '.'
-        paths: [ '.' ]
-
 workflows:
     version: 2
     pipeline:
@@ -45,7 +40,9 @@ jobs:
         <<: *php_defaults
         steps:
             - checkout
-            - *persist_workspace
+            - persist_to_workspace:
+                root: '.'
+                paths: [ '.' ]
 
     php_install:
         <<: *php_defaults
@@ -65,7 +62,9 @@ jobs:
                 key: 'composer-lock-{{ checksum "composer.json" }}'
                 paths: [ 'vendor' ]
 
-            - *persist_workspace
+            - persist_to_workspace:
+                root: '.'
+                paths: [ 'vendor' ]
 
     node_install:
         <<: *node_defaults
@@ -73,17 +72,19 @@ jobs:
             - *attach_workspace
 
             - restore_cache:
-                key: 'package-lock-{{ checksum "package.lock" }}'
+                key: 'package-lock-{{ checksum "package-lock.json" }}'
 
             - run:
                 name: 'Install NPM dependencies'
                 command: 'npm ci'
 
             - save_cache:
-                key: 'package-lock-{{ checksum "package.lock" }}'
+                key: 'package-lock-{{ checksum "package-lock.json" }}'
                 paths: [ 'node_modules' ]
 
-            - *persist_workspace
+            - persist_to_workspace:
+                root: '.'
+                paths: [ 'node_modules' ]
 
     test:
         <<: *php_defaults
