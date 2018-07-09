@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "secure": "snyk test && snyk monitor"
+    "secure": "snyk test --file=composer.lock && snyk monitor --file=composer.lock --org=learnbyapplication --project-name=staticsitegenerator"
   },
   "author": "",
   "license": "MIT",

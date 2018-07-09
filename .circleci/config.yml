@@ -59,7 +59,7 @@ jobs:
                     composer show
 
             - save_cache:
-                key: 'composer-lock-{{ checksum "composer.json" }}'
+                key: 'composer-lock-{{ checksum "composer.lock" }}'
                 paths: [ 'vendor' ]
 
             - persist_to_workspace:
